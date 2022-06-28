@@ -74,7 +74,6 @@ def create_task():
 @current_app.route("/edit_task", methods=["POST"])
 def edit_task():
     task_ = Task.query.get(int(request.args.get("id_")))
-    task_.description = request.form["description"]
     task_.status = request.form["status"]
     db.session.commit()
 
@@ -84,7 +83,7 @@ def edit_task():
 @current_app.route("/mark_task")
 def mark_task():
     task_ = Task.query.get(int(request.args.get("id_")))
-    task_.status = "DONE" if not task_.status == "DONE" else "TODO"
+    task_.status = "Done" if not task_.status == "Done" else "Todo"
 
     db.session.commit()
 

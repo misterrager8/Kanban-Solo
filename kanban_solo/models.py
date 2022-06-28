@@ -15,13 +15,13 @@ class Board(db.Model):
         super(Board, self).__init__(**kwargs)
 
     def get_todo(self):
-        return self.tasks.filter(Task.parent_task == None, Task.status == "TODO")
+        return self.tasks.filter(Task.parent_task == None, Task.status == "Todo")
 
     def get_doing(self):
-        return self.tasks.filter(Task.parent_task == None, Task.status == "DOING")
+        return self.tasks.filter(Task.parent_task == None, Task.status == "Doing")
 
     def get_done(self):
-        return self.tasks.filter(Task.parent_task == None, Task.status == "DONE")
+        return self.tasks.filter(Task.parent_task == None, Task.status == "Done")
 
 
 class Task(db.Model):
@@ -30,7 +30,7 @@ class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     description = db.Column(db.Text)
     note = db.Column(db.Text)
-    status = db.Column(db.Text, default="TODO")
+    status = db.Column(db.Text, default="Todo")
     date_added = db.Column(db.DateTime)
     board = db.Column(db.Integer, db.ForeignKey("boards.id"))
     parent_task = db.Column(db.Integer, db.ForeignKey("tasks.id"))
@@ -41,3 +41,8 @@ class Task(db.Model):
 
     def get_subtasks(self, filter_: str = None):
         return self.subtasks.filter(db.text(filter_))
+
+    def get_subtasks_progress(self):
+        done = self.subtasks.filter(Task.status == "Done").count()
+        total = self.subtasks.count()
+        return "%s of %s subtasks" % (done, total)

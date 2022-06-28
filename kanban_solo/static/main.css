@@ -1,8 +1,15 @@
-:root {
+:root, html[data-theme="default"] {
     --navbar-bg: #2C2C37;
     --navbar-txt: white;
     --body-bg: #21212C;
     --body-txt: white;
+}
+
+html[data-theme="light"] {
+    --navbar-bg: white;
+    --navbar-txt: #1a1a1a;
+    --body-bg: lightgray;
+    --body-txt: #1a1a1a;
 }
 
 a, a:hover {
@@ -22,7 +29,7 @@ nav, .card {
 }
 
 .font-custom, .nav-item-custom, .btn-custom, ::placeholder {
-    text-transform: uppercase;
+    text-transform: capitalize;
     font-weight: bold;
     letter-spacing: 3px;
     font-size: 0.9em;

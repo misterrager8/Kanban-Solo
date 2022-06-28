@@ -1,9 +1,9 @@
 <!--suppress ALL-->
 {% macro task_card(task) %}
-<div class="card col-12 border-0 mb-4">
+<div class="card col-xl-12 border-0 mb-4">
     <div class="card-body">
         <a data-bs-toggle="modal" data-bs-target="#editTask{{ task.id }}" class="fw-bold">{{ task.description }}</a><br>
-        <span class="fst-italic small opacity-25">{{ task.get_subtasks(filter_="status != 'DONE'").count() }} subtasks</span>
+        <span class="fst-italic small opacity-25">{{ task.get_subtasks_progress() }}</span>
     </div>
 </div>
 
@@ -17,15 +17,19 @@
                     <a class="font-custom text-danger" href="{{ url_for('delete_task', id_=task.id) }}">delete</a>
                 </div>
             </div>
-            <span class="my-3 opacity-25">{{ task.note }}</span>
+            <span class="my-3 opacity-25" style="white-space: pre-wrap">{{ task.note or 'No Notes' }}</span>
             
+            {% if task.subtasks.count() > 0 %}
+            <span class="font-custom">subtasks</span>
             {% for i in task.subtasks %}
-            <div class="mb-3">
-                <a href="{{ url_for('mark_task', id_=i.id) }}" class="bi bi-{% if i.status=="DONE" %}check-square{% else %}square{% endif %}"></a>
+            <div class="mb-3 {% if i.status=="Done" %}text-decoration-line-through opacity-25{% else %}square{% endif %}">
+                <a href="{{ url_for('mark_task', id_=i.id) }}" class="bi bi-{% if i.status=="Done" %}check-square{% else %}square{% endif %} me-2"></a>
                 {{ i.description }}
             </div>
             {% endfor %}
+            {% endif %}
             
+            <span class="font-custom">status</span>
             {{ macros.task_edit_form(task) }}
         </div>
     </div>
@@ -34,21 +38,21 @@
 
 {% macro board_create_form() %}
 <form method="POST" action="{{ url_for('create_board') }}">
-    <input name="name" autocomplete="off" class="input-custom w-100 mb-3" placeholder="name">
+    <input name="name" autocomplete="off" class="input-custom w-100 mb-3" placeholder="Example: E-commerce website">
     <button type="submit" class="btn-custom w-100">create board</button>
 </form>
 {% endmacro %}
 
 {% macro task_create_form(board) %}
-{% set status_options = ["TODO", "DOING", "DONE"] %}
+{% set status_options = ["Todo", "Doing", "Done"] %}
 <form method="POST" action="{{ url_for('create_task', id_=board.id) }}">
     <label class="font-custom">Description</label>
-    <input name="description" autocomplete="off" class="input-custom w-100 mb-4" placeholder="description">
+    <input name="description" autocomplete="off" class="input-custom w-100 mb-4" placeholder="Example: Write documentation">
     <label class="font-custom">Note</label>
-    <textarea rows="10" name="note" autocomplete="off" class="input-custom w-100 mb-4" placeholder="note"></textarea>
+    <textarea rows="10" name="note" autocomplete="off" class="input-custom w-100 mb-4" placeholder="Example: Use sphinx" style="white-space: pre-wrap"></textarea>
     
     <label class="font-custom">subtasks</label>
-    <input name="subtask" autocomplete="off" class="input-custom w-100 mb-3" placeholder="subtask">
+    <input name="subtask" autocomplete="off" class="input-custom w-100 mb-3" placeholder="Example: List out features">
     <button type="button" class="btn-custom w-100 mb-4">+ add new subtask</button>
     
     <label class="font-custom">status</label>
@@ -62,14 +66,12 @@
 {% endmacro %}
 
 {% macro task_edit_form(task) %}
-{% set status_options = ["TODO", "DOING", "DONE"] %}
+{% set status_options = ["Todo", "Doing", "Done"] %}
 <form method="POST" action="{{ url_for('edit_task', id_=task.id) }}">
-    <input name="description" autocomplete="off" class="input-custom w-100 mb-3" placeholder="description" value="{{ task.description }}">
-    <select name="status" class="input-custom w-100 mb-3">
+    <select name="status" class="input-custom w-100" onchange="this.form.submit()">
         {% for i in status_options %}
         <option value="{{ i }}" {% if i==task.status %}selected{% endif %}>{{ i }}</option>
         {% endfor %}
     </select>
-    <button type="submit" class="btn-custom w-100">edit task</button>
 </form>
 {% endmacro %}

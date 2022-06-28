@@ -6,7 +6,7 @@
     <span class="font-custom m-1">{{ board_.name }}</span>
     <div>
         <a class="btn-custom" data-bs-toggle="modal" data-bs-target="#addTask"><i class="bi bi-plus-lg"></i> add new task</a>
-        <a class="bi bi-three-dots-vertical" data-bs-toggle="dropdown" data-bs-target="#optionBoard"></a>
+        <a class="bi bi-three-dots-vertical ms-2" data-bs-toggle="dropdown" data-bs-target="#optionBoard"></a>
         <div class="dropdown-menu text-center" id="optionBoard">
             <a class="font-custom text-danger" href="{{ url_for('delete_board', id_=board_.id) }}">delete</a>
         </div>
@@ -22,20 +22,20 @@
 </div>
 
 <div class="row">
-    <div class="col-4">
-        <p class="font-custom text-center"><i class="bi bi-circle-fill text-warning"></i> todo ({{ board_.get_todo().count() }})</p>
+    <div class="col-xl-4">
+        <p class="font-custom"><i class="bi bi-circle-fill text-warning"></i> TODO ({{ board_.get_todo().count() }})</p>
         {% for i in board_.get_todo() %}
         {{ macros.task_card(i) }}
         {% endfor %}
     </div>
-    <div class="col-4">
-        <p class="font-custom text-center"><i class="bi bi-circle-fill text-primary"></i> doing ({{ board_.get_doing().count() }})</p>
+    <div class="col-xl-4">
+        <p class="font-custom"><i class="bi bi-circle-fill text-primary"></i> DOING ({{ board_.get_doing().count() }})</p>
         {% for i in board_.get_doing() %}
         {{ macros.task_card(i) }}
         {% endfor %}
     </div>
-    <div class="col-4">
-        <p class="font-custom text-center"><i class="bi bi-circle-fill text-success"></i> done ({{ board_.get_done().count() }})</p>
+    <div class="col-xl-4">
+        <p class="font-custom"><i class="bi bi-circle-fill text-success"></i> DONE ({{ board_.get_done().count() }})</p>
         {% for i in board_.get_done() %}
         {{ macros.task_card(i) }}
         {% endfor %}
