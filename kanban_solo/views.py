@@ -18,7 +18,7 @@ def index():
 @current_app.route("/create_board", methods=["POST"])
 def create_board():
     _ = Board(
-        name=request.form["name"],
+        name=request.form["name"].title(),
         date_added=datetime.datetime.now(),
         color="#{:06x}".format(random.randint(0, 0xFFFFFF)),
     )
@@ -49,7 +49,7 @@ def delete_board():
 @current_app.route("/create_task", methods=["POST"])
 def create_task():
     _ = Task(
-        description=request.form["description"],
+        description=request.form["description"].capitalize(),
         status=request.form["status"],
         note=request.form["note"],
         date_added=datetime.datetime.now(),
@@ -60,7 +60,7 @@ def create_task():
 
     if request.form["subtask"]:
         _sub = Task(
-            description=request.form["subtask"],
+            description=request.form["subtask"].capitalize(),
             date_added=datetime.datetime.now(),
             board=int(request.args.get("id_")),
             parent_task=_.id,
