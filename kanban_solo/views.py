@@ -84,7 +84,7 @@ def edit_task():
 def mark_task():
     task_ = Task.query.get(int(request.args.get("id_")))
     task_.status = "DONE" if not task_.status == "DONE" else "TODO"
-    
+
     db.session.commit()
 
     return redirect(request.referrer)

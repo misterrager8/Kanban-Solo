@@ -38,5 +38,5 @@ class Task(db.Model):
     def __init__(self, **kwargs):
         super(Task, self).__init__(**kwargs)
 
-    def get_subtasks(self, filter_:str=None):
+    def get_subtasks(self, filter_: str = None):
         return self.subtasks.filter(db.text(filter_))
