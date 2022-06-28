@@ -29,6 +29,7 @@ class Task(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     description = db.Column(db.Text)
+    note = db.Column(db.Text)
     status = db.Column(db.Text, default="TODO")
     date_added = db.Column(db.DateTime)
     board = db.Column(db.Integer, db.ForeignKey("boards.id"))

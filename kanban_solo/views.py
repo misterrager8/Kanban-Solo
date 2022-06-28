@@ -51,6 +51,7 @@ def create_task():
     _ = Task(
         description=request.form["description"],
         status=request.form["status"],
+        note=request.form["note"],
         date_added=datetime.datetime.now(),
         board=int(request.args.get("id_")),
     )

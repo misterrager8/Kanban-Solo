@@ -17,9 +17,10 @@
                     <a class="font-custom text-danger" href="{{ url_for('delete_task', id_=task.id) }}">delete</a>
                 </div>
             </div>
+            <span class="my-3 opacity-25">{{ task.note }}</span>
             
             {% for i in task.subtasks %}
-            <div>
+            <div class="mb-3">
                 <a href="{{ url_for('mark_task', id_=i.id) }}" class="bi bi-{% if i.status=="DONE" %}check-square{% else %}square{% endif %}"></a>
                 {{ i.description }}
             </div>
@@ -43,6 +44,8 @@
 <form method="POST" action="{{ url_for('create_task', id_=board.id) }}">
     <label class="font-custom">Description</label>
     <input name="description" autocomplete="off" class="input-custom w-100 mb-4" placeholder="description">
+    <label class="font-custom">Note</label>
+    <textarea rows="10" name="note" autocomplete="off" class="input-custom w-100 mb-4" placeholder="note"></textarea>
     
     <label class="font-custom">subtasks</label>
     <input name="subtask" autocomplete="off" class="input-custom w-100 mb-3" placeholder="subtask">
