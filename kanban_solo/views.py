@@ -25,7 +25,7 @@ def create_board():
     db.session.add(_)
     db.session.commit()
 
-    return redirect(request.referrer)
+    return redirect(url_for("board", id_=_.id))
 
 
 @current_app.route("/board")
