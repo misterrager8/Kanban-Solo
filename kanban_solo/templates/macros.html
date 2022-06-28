@@ -1,0 +1,72 @@
+<!--suppress ALL-->
+{% macro task_card(task) %}
+<div class="card col-12 border-0 mb-4">
+    <div class="card-body">
+        <a data-bs-toggle="modal" data-bs-target="#editTask{{ task.id }}" class="fw-bold">{{ task.description }}</a><br>
+        <span class="fst-italic small opacity-25">{{ task.get_subtasks(filter_="status != 'DONE'").count() }} subtasks</span>
+    </div>
+</div>
+
+<div class="modal" id="editTask{{ task.id }}">
+    <div class="modal-dialog">
+        <div class="modal-content p-4">
+            <div>
+                <span class="fw-bold">{{ task.description }}</span>
+                <a data-bs-toggle="dropdown" data-bs-target="#optionTask{{ task.id }}" class="bi bi-three-dots-vertical float-end"></a>
+                <div class="dropdown-menu text-center" id="optionTask{{ task.id }}">
+                    <a class="font-custom text-danger" href="{{ url_for('delete_task', id_=task.id) }}">delete</a>
+                </div>
+            </div>
+            
+            {% for i in task.subtasks %}
+            <div>
+                <a href="{{ url_for('mark_task', id_=i.id) }}" class="bi bi-{% if i.status=="DONE" %}check-square{% else %}square{% endif %}"></a>
+                {{ i.description }}
+            </div>
+            {% endfor %}
+            
+            {{ macros.task_edit_form(task) }}
+        </div>
+    </div>
+</div>
+{% endmacro %}
+
+{% macro board_create_form() %}
+<form method="POST" action="{{ url_for('create_board') }}">
+    <input name="name" autocomplete="off" class="input-custom w-100 mb-3" placeholder="name">
+    <button type="submit" class="btn-custom w-100">create board</button>
+</form>
+{% endmacro %}
+
+{% macro task_create_form(board) %}
+{% set status_options = ["TODO", "DOING", "DONE"] %}
+<form method="POST" action="{{ url_for('create_task', id_=board.id) }}">
+    <label class="font-custom">Description</label>
+    <input name="description" autocomplete="off" class="input-custom w-100 mb-4" placeholder="description">
+    
+    <label class="font-custom">subtasks</label>
+    <input name="subtask" autocomplete="off" class="input-custom w-100 mb-3" placeholder="subtask">
+    <button type="button" class="btn-custom w-100 mb-4">+ add new subtask</button>
+    
+    <label class="font-custom">status</label>
+    <select name="status" class="input-custom w-100 mb-3">
+        {% for i in status_options %}
+        <option value="{{ i }}">{{ i }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit" class="btn-custom w-100">create task</button>
+</form>
+{% endmacro %}
+
+{% macro task_edit_form(task) %}
+{% set status_options = ["TODO", "DOING", "DONE"] %}
+<form method="POST" action="{{ url_for('edit_task', id_=task.id) }}">
+    <input name="description" autocomplete="off" class="input-custom w-100 mb-3" placeholder="description" value="{{ task.description }}">
+    <select name="status" class="input-custom w-100 mb-3">
+        {% for i in status_options %}
+        <option value="{{ i }}" {% if i==task.status %}selected{% endif %}>{{ i }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit" class="btn-custom w-100">edit task</button>
+</form>
+{% endmacro %}
