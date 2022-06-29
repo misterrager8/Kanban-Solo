@@ -22,7 +22,7 @@
             {% if task.subtasks.count() > 0 %}
             <span class="font-custom">subtasks</span>
             {% for i in task.subtasks %}
-            <div class="mb-3 {% if i.status=="Done" %}text-decoration-line-through opacity-25{% else %}square{% endif %}">
+            <div class="my-1 {% if i.status=="Done" %}text-decoration-line-through opacity-25{% else %}square{% endif %}">
                 <a href="{{ url_for('mark_task', id_=i.id) }}" class="bi bi-{% if i.status=="Done" %}check-square{% else %}square{% endif %} me-2"></a>
                 {{ i.description }}
             </div>
@@ -38,7 +38,7 @@
 
 {% macro board_create_form() %}
 <form method="POST" action="{{ url_for('create_board') }}">
-    <input name="name" autocomplete="off" class="input-custom w-100 mb-3" placeholder="Example: E-commerce website">
+    <input required name="name" autocomplete="off" class="input-custom w-100 mb-3" placeholder="Example: E-commerce website">
     <button type="submit" class="btn-custom w-100">create board</button>
 </form>
 {% endmacro %}
@@ -47,13 +47,16 @@
 {% set status_options = ["Todo", "Doing", "Done"] %}
 <form method="POST" action="{{ url_for('create_task', id_=board.id) }}">
     <label class="font-custom">Description</label>
-    <input name="description" autocomplete="off" class="input-custom w-100 mb-4" placeholder="Example: Write documentation">
+    <input required name="description" autocomplete="off" class="input-custom w-100 mb-4" placeholder="Example: Write documentation">
     <label class="font-custom">Note</label>
     <textarea rows="10" name="note" autocomplete="off" class="input-custom w-100 mb-4" placeholder="Example: Use sphinx" style="white-space: pre-wrap"></textarea>
     
     <label class="font-custom">subtasks</label>
-    <input name="subtask" autocomplete="off" class="input-custom w-100 mb-3" placeholder="Example: List out features">
-    <button type="button" class="btn-custom w-100 mb-4">+ add new subtask</button>
+    <div class="input-group mb-3" id="subtask">
+        <input name="subtask" autocomplete="off" class="input-custom flex-grow-1" placeholder="Example: List out features">
+        <button type="button" class="btn-custom bi bi-trash input-group-append" onclick="this.parentElement.remove()"></button>
+    </div>
+    <button type="button" class="btn-custom w-100 mb-4" onclick="addSubTask()">+ add new subtask</button>
     
     <label class="font-custom">status</label>
     <select name="status" class="input-custom w-100 mb-3">

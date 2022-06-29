@@ -11,3 +11,8 @@ function changeTheme(theme) {
         localStorage.setItem('kanban_solo_theme', 'default');
     }
 }
+
+function addSubTask() {
+    node = document.getElementById('subtask');
+    node.insertAdjacentElement('afterend', node.cloneNode(true));
+}

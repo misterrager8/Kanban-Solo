@@ -15,13 +15,19 @@ class Board(db.Model):
         super(Board, self).__init__(**kwargs)
 
     def get_todo(self):
-        return self.tasks.filter(Task.parent_task == None, Task.status == "Todo")
+        return self.tasks.filter(
+            Task.parent_task == None, Task.status == "Todo"
+        ).order_by(db.text("id desc"))
 
     def get_doing(self):
-        return self.tasks.filter(Task.parent_task == None, Task.status == "Doing")
+        return self.tasks.filter(
+            Task.parent_task == None, Task.status == "Doing"
+        ).order_by(db.text("id desc"))
 
     def get_done(self):
-        return self.tasks.filter(Task.parent_task == None, Task.status == "Done")
+        return self.tasks.filter(
+            Task.parent_task == None, Task.status == "Done"
+        ).order_by(db.text("id desc"))
 
 
 class Task(db.Model):

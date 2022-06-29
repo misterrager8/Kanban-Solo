@@ -59,13 +59,14 @@ def create_task():
     db.session.commit()
 
     if request.form["subtask"]:
-        _sub = Task(
-            description=request.form["subtask"].capitalize(),
-            date_added=datetime.datetime.now(),
-            board=int(request.args.get("id_")),
-            parent_task=_.id,
-        )
-        db.session.add(_sub)
+        for i in request.form.getlist("subtask"):
+            _sub = Task(
+                description=i.capitalize(),
+                date_added=datetime.datetime.now(),
+                board=int(request.args.get("id_")),
+                parent_task=_.id,
+            )
+            db.session.add(_sub)
         db.session.commit()
 
     return redirect(request.referrer)
