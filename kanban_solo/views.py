@@ -2,7 +2,9 @@ from flask import current_app, render_template, request, url_for, redirect
 from kanban_solo.models import Board, Task
 import random
 import datetime
-from kanban_solo import db
+from kanban_solo.database import Database
+
+db = Database()
 
 
 @current_app.context_processor
@@ -22,8 +24,7 @@ def create_board():
         date_added=datetime.datetime.now(),
         color="#{:06x}".format(random.randint(0, 0xFFFFFF)),
     )
-    db.session.add(_)
-    db.session.commit()
+    db.create(_)
 
     return redirect(url_for("board", id_=_.id))
 
@@ -38,10 +39,8 @@ def board():
 def delete_board():
     board_ = Board.query.get(int(request.args.get("id_")))
 
-    for i in board_.tasks:
-        db.session.delete(i)
-    db.session.delete(board_)
-    db.session.commit()
+    db.delete_multiple(board_.tasks)
+    db.delete(board_)
 
     return redirect(url_for("index"))
 
@@ -55,19 +54,20 @@ def create_task():
         date_added=datetime.datetime.now(),
         board=int(request.args.get("id_")),
     )
-    db.session.add(_)
-    db.session.commit()
+    db.create(_)
 
     if request.form["subtask"]:
-        for i in request.form.getlist("subtask"):
-            _sub = Task(
-                description=i.capitalize(),
-                date_added=datetime.datetime.now(),
-                board=int(request.args.get("id_")),
-                parent_task=_.id,
-            )
-            db.session.add(_sub)
-        db.session.commit()
+        db.create_multiple(
+            [
+                Task(
+                    description=i.capitalize(),
+                    date_added=datetime.datetime.now(),
+                    board=int(request.args.get("id_")),
+                    parent_task=_.id,
+                )
+                for i in request.form.getlist("subtask")
+            ]
+        )
 
     return redirect(request.referrer)
 
@@ -76,7 +76,10 @@ def create_task():
 def edit_task():
     task_ = Task.query.get(int(request.args.get("id_")))
     task_.status = request.form["status"]
-    db.session.commit()
+    if task_.status == "Done":
+        for i in task_.subtasks:
+            i.status = "Done"
+    db.update()
 
     return redirect(request.referrer)
 
@@ -86,7 +89,7 @@ def mark_task():
     task_ = Task.query.get(int(request.args.get("id_")))
     task_.status = "Done" if not task_.status == "Done" else "Todo"
 
-    db.session.commit()
+    db.update()
 
     return redirect(request.referrer)
 
@@ -95,9 +98,7 @@ def mark_task():
 def delete_task():
     task_ = Task.query.get(int(request.args.get("id_")))
 
-    for i in task_.subtasks:
-        db.session.delete(i)
-    db.session.delete(task_)
-    db.session.commit()
+    db.delete_multiple(task_.subtasks)
+    db.delete(task_)
 
     return redirect(request.referrer)

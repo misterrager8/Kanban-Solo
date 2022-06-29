@@ -9,7 +9,7 @@
     </head>
     <nav>
         <div class="navbar-brand text-center mb-4">
-            <a href="{{ url_for('index') }}"><i class="bi bi-check-all"></i> kanban solo</a>
+            <a href="{{ url_for('index') }}"><i class="bi bi-check-all"></i> Kanban Solo</a>
         </div>
         {% for i in boards %}
         <a class="nav-item-custom mb-3 text-truncate" href="{{ url_for('board', id_=i.id) }}"><i class="bi bi-view-list"></i> {{ i.name }}</a>
@@ -29,7 +29,7 @@
     
     <div class="container" id="pageContent">
         {% block body %}
-        <title>kanban solo</title>
+        <title>Kanban Solo</title>
         <div class="d-flex h-100 w-100">
             <span style="font-size: 11em" class="align-self-center mx-auto opacity-25 bi bi-check-all"></span>
         </div>
